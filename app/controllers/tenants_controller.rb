@@ -5,7 +5,7 @@ class TenantsController < ApplicationController
     wrap_parameters format: []
 
     def index        
-        tenants = Tenants.all  
+        tenants = Tenant.all  
         render json: tenants, include: :apartments
     end
 
@@ -26,9 +26,20 @@ class TenantsController < ApplicationController
     end
 
     def destroy 
-        tenant = find_tenant
-        tenant.destroy
-        head :no_content
+        if params[:lease_id].present? 
+            lease = Lease.find_by(id: params[:lease_id], tenant_id: params[:id])
+            if lease
+                lease.destroy
+                # head :no-content
+                render json: { status: :ok }
+            else
+                render json: { error: "Lease not found" }, status: :not_found    
+            end
+        else
+            tenant = find_tenant
+            tenant.destroy
+            head :no_content
+        end
     end
 
     private
@@ -38,7 +49,7 @@ class TenantsController < ApplicationController
     end
 
     def tenant_params
-        params.permit(:number)
+        params.permit(:name, :age)
       end
 
     def render_not_found_response

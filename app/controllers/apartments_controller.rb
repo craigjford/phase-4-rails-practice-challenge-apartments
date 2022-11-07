@@ -26,9 +26,20 @@ class ApartmentsController < ApplicationController
     end
 
     def destroy 
-        apartment = find_apartment
-        apartment.destroy
-        head :no_content
+        if params[:lease_id].present? 
+            lease = Lease.find_by(id: params[:lease_id], apartment_id: params[:id])
+            if lease
+                lease.destroy
+                # head :no-content
+                render json: { status: :ok }
+            else
+                render json: { error: "Lease not found" }, status: :not_found    
+            end
+        else
+            apartment = find_apartment
+            apartment.destroy
+            head :no_content
+        end
     end
 
     private
