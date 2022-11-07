@@ -1,11 +1,6 @@
 class LeasesController < ApplicationController
     rescue_from ActiveRecord::RecordInvalid, with: :render_unprocessable_entity_response
 
-    def index 
-        leases = Lease.all
-        render json: leases                  
-    end
-
     def create 
         lease = Lease.create(lease_params)
         render json: lease, status: :created
