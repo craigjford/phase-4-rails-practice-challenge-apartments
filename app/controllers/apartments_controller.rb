@@ -6,12 +6,12 @@ class ApartmentsController < ApplicationController
 
     def index        
         apartments = Apartment.all  
-        render json: apartments, include: :tenants
+        render json: apartments, include: :tenants, status: :ok
     end
 
     def show    
         apartment = find_apartment
-        render json: apartment, include: :tenants
+        render json: apartment, include: :tenants, status: :ok
     end
 
     def update   
@@ -38,7 +38,7 @@ class ApartmentsController < ApplicationController
         else
             apartment = find_apartment
             apartment.destroy
-            head :no_content
+            head :no_content, status: 204
         end
     end
 

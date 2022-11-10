@@ -6,18 +6,18 @@ class TenantsController < ApplicationController
 
     def index        
         tenants = Tenant.all  
-        render json: tenants, include: :apartments
+        render json: tenants, include: :apartments, status: :ok
     end
 
     def show    
         tenant = find_tenant
-        render json: tenant, include: :apartments
+        render json: tenant, include: :apartments, status: :ok
     end
 
     def update   
         tenant = find_tenant
         tenant.update!(tenant_params)
-        render json: tenant, status: :ok
+        render json: tenant, status: :accepted
     end
 
     def create   
@@ -31,14 +31,14 @@ class TenantsController < ApplicationController
             if lease
                 lease.destroy
                 # head :no-content
-                render json: { status: :ok }
+                render json: { status: 204 }
             else
                 render json: { error: "Lease not found" }, status: :not_found    
             end
         else
             tenant = find_tenant
             tenant.destroy
-            head :no_content
+            head :no_content,status: 204
         end
     end
 
